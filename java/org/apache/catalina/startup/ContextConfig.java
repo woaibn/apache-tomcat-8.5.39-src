@@ -712,6 +712,12 @@ public class ContextConfig implements LifecycleListener {
         }
 
         webConfig();
+        /*
+        * 直接启动org.apache.catalina.startup.Bootstrap的时候没有加载org.apache.jasper.servlet.JasperInitializer，
+        * 从而无法编译JSP。解决办法是在tomcat的源码org.apache.catalina.startup.ContextConfig中手动将JSP解析器初始化。
+        * 项目再启动，在浏览器访问http://localhost:8080/ ，就可以看到熟悉的经典欢迎页面。
+        * */
+        context.addServletContainerInitializer(new JasperInitializer(), null);
 
         if (!context.getIgnoreAnnotations()) {
             applicationAnnotationsConfig();
